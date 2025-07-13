@@ -356,6 +356,22 @@ router.delete("/:id", auth, async (req, res) => {
     res.status(500).json({ message: "Server error while deleting note" });
   }
 });
+//download option
+ 
+router.get("/download/:id", async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
+    if (!note || !note.fileUrl) {
+      return res.status(404).json({ message: "Note or file not found" });
+    }
+
+    // Redirect to Cloudinary file (user downloads directly)
+    res.redirect(note.fileUrl);
+  } catch (err) {
+    console.error("Download error:", err);
+    res.status(500).json({ message: "Server error during download" });
+  }
+});
 
 // Get departments with note counts
 router.get("/stats/departments", async (req, res) => {
